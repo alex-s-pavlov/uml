@@ -1,0 +1,18 @@
+@startuml
+
+actor "Customer" as cs
+participant "Web UI" as ui
+participant "Order Controller" as controller
+participant "Payment Service" as payment
+database "Database" as db
+
+cs -> ui: InitiateOrder(orderDetails)
+ui -> controller: processOrder(orderDetails)
+controller -> db: saveOrder(orderDetails)
+controller <- db: orderSaved
+controller -> payment: processPayment(paymentInfo)
+controller <- payment: paymentResult
+ui <- controller: orderConfirmation(confirmationDetails)
+cs <- ui: displayConfirmation(confirmationDetails)
+
+@enduml
