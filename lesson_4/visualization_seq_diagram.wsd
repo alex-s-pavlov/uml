@@ -27,6 +27,8 @@ controller <[#green]-- payment: paymentSuccess(paymentConfirmation)
 controller -[#lightblue]> notification: sendOrderNotification(orderId)
 else "Ошибка платы"
 controller <[#red]-- payment -- : paymentFailure(errorCMessage)
+controller -> db ++: savePreOrder(preOrderDetails)
+controller <[#green]-- db -- : preOrderSaved
 note right
     Заказ сохраняется как предварительный
 end note
