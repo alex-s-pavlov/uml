@@ -1,18 +1,59 @@
-@startuml
-
-actor "Customer" as cs
+@startuml Vizualization
+skinparam sequence{
+    ParticipantBorderColor #green
+}
+actor "Customer" as cs #lightblue
 participant "Web UI" as ui
 participant "Order Controller" as controller
 participant "Payment Service" as payment
-database "Database" as db
+database "Database" as db #yellow
+participant "Notification Service" as notification
 
-cs -> ui: InitiateOrder(orderDetails)
-ui -> controller: processOrder(orderDetails)
-controller -> db: saveOrder(orderDetails)
-controller <- db: orderSaved
-controller -> payment: processPayment(paymentInfo)
-controller <- payment: paymentResult
-ui <- controller: orderConfirmation(confirmationDetails)
-cs <- ui: displayConfirmation(confirmationDetails)
+group "1.Оформление заказа"
+activate cs
+cs -> ui ++ : InitiateOrder(orderDetails)
+ui -> controller ++ : processOrder(orderDetails)
+controller -> db ++: saveOrder(orderDetails)
+controller <[#green]-- db -- : orderSaved
+note right
+    Сохранение заказа в статусе "Ожидание"
+end note
+end group
+
+group "2.Оплата"
+controller -> payment ++ : processPayment(paymentInfo)
+alt "Успешная оплата"
+controller <[#green]-- payment: paymentSuccess(paymentConfirmation) 
+controller -[#lightblue]> notification: sendOrderNotification(orderId)
+else "Ошибка платы"
+controller <[#red]-- payment -- : paymentFailure(errorCMessage)
+note right
+    Заказ сохраняется как предварительный
+end note
+end
+end group
+
+group "3.Подтвеждение оплаты"
+ui <- controller -- : orderConfirmation(confirmationDetails)
+cs <- ui -- : displayConfirmation(confirmationDetails)
+end group
+
+group "4.Изменение корзины"
+cs -> ui ++ : modifyCart(action, itemDetails)
+note right
+    Действие может быть: добавление, удаление, изменение количества
+end note
+ui -> controller ++ : updateCart(action, itemDetails)
+controller -> db ++: updateCartDB(action, itemDetails)
+controller <[#green]-- db -- : cartUpdateConfirmation
+ui <- controller -- : notifyCartUpdate(cartStatus)
+end group
+
+group "5.Уведомление менеджера"
+ui <- notification -- : managerNotification(orderId, status)
+note left
+    Менеджер получает уведомление о новом заказе
+end note
+end group
 
 @enduml
