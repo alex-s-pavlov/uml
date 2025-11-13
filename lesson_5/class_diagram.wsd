@@ -1,0 +1,43 @@
+@startuml Class Diagram
+
+abstract class Payment{
+    -amount: Double 
+    -paymentDate: Timestamp
+    -transactionId: String 
+    +Payment(amount: Double, paymentDate: Date, transactionId: String)
+    +processPayment()
+    +getAmount()
+    +getPaymentDate()
+    +getTransactionId()
+}
+
+class CashPayment{
+    -cashProvided: String
+    +CashPayment(amount: Double, paymentDate: Date, transactionId: String, cashProvided: String)
+    +calculateChange()
+    +getCashProvader()
+}
+
+class CardPayment{
+    -cardNumber: String
+    -cardHolderName: String
+    -cardExpirationDate: Date
+    +CardPayment(amount: Double, paymentDate: Date, transactionId: String, cardNumber: String, cardHolderName: String, cardExpirationDate: Date)
+    +validateCard()
+    +getCardNumber()
+    +getCardHolderName()
+    +getCardExpirationDate()
+
+}
+
+class PaymentManager{
+    -List<Payment> payment
+    +processAllPayments(): Boolean
+}
+
+PaymentManager o-- Payment
+
+Payment <|-- CashPayment
+Payment <|-- CardPayment
+
+@enduml
