@@ -5,7 +5,7 @@ abstract class Payment{
     -paymentDate: Timestamp
     -transactionId: String 
     +Payment(amount: Double, paymentDate: Date, transactionId: String)
-    +processPayment()
+    +processPayment(): Boolean
     +getAmount()
     +getPaymentDate()
     +getTransactionId()
