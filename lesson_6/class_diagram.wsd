@@ -1,50 +1,60 @@
 @startuml Class diagram
 
 class User {
-    -userID: String
+    -userID: Integer
     -userLogin: String
-    -usertName: String
-    -userMidleName: String
-    -userSurname: String
-    -userBirthDate: Date
-    -userLocation: String
+    -Name: String
+    -MidleName: String
+    -Surname: String
+    -BirthDate: Date
+    -Address: String
     +getFullName(): String
     +getBirthDate()   
 }
 
 class Student{
-    -isEnrollmented: Boolean
-    -isExpelled: Boolean
+    +isActiveStudent(student: Student): Boolean
 }
 
 class Instructor{
-    -terminationDate: Date
+    -startDate: Date
+    -endDate: Date
     -courses: List<Course>
+    +isActiveInstructor(instructor: Instructor): Boolean
 }
 
 class Course{
-    -courseID: String
+    -courseID: Integer
     -courseTitle: String
-    -instructor: <<reference>> Instructor
+    -instructor: List<Instructor>
+    -materials: List<Material>
+    -isActual: Boolean
+    +getActualCourses(): List<Course>
 }
 
-
 class Enrollment{
-    -enrollmentDate: Date
+    -enrollmentStartDate: Date
+    -enrollmentEndDate: Date
     -enrollmentedStudent: <<reference>> Student 
     -enrollmentCourse: <<reference>> Cource
+    -isSuccess: Bollean
+    +getActiveCourses(student: Student): List<Course>
+    +getInstructorCourses(instructor: Instructor): List<Course>
 }
 
 class Material{
+    -materialId: Integer
     -materialTitle: String
     -materialType: String
     -materialActualizationDate: Date
+    +getCourseMaterials(course: Course): List<Material>
 }
 
 User <|-- Student: Наследование (студент - подтип пользователя)
 User <|-- Instructor: Наследование (преподаватель - подтип пользователя)
-Student "1" -- "0..*" Enrollment: Студент зачисляется на курс
-Enrollment "0..*" -- "1" Course: Зачисление происходит на конкретный курс
-Course "1" *-- "1..*" Material: Курс сосоит из материалов
+Student "1" -- "0..*" Enrollment: Студент зачисляется на курс (ассоциация, 0..*)
+Enrollment "0..*" -- "1" Course: Зачисление происходит на конкретный курс (ассоциация, 0..*)
+Course "*" o-- "1..*" Material: Курс состоит из материалов (композиция, 1..*)
+
 
 @enduml
