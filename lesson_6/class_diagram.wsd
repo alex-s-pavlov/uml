@@ -1,0 +1,50 @@
+@startuml Class diagram
+
+class User {
+    -userID: String
+    -userLogin: String
+    -usertName: String
+    -userMidleName: String
+    -userSurname: String
+    -userBirthDate: Date
+    -userLocation: String
+    +getFullName(): String
+    +getBirthDate()   
+}
+
+class Student{
+    -isEnrollmented: Boolean
+    -isExpelled: Boolean
+}
+
+class Instructor{
+    -terminationDate: Date
+    -courses: List<Course>
+}
+
+class Course{
+    -courseID: String
+    -courseTitle: String
+    -instructor: <<reference>> Instructor
+}
+
+
+class Enrollment{
+    -enrollmentDate: Date
+    -enrollmentedStudent: <<reference>> Student 
+    -enrollmentCourse: <<reference>> Cource
+}
+
+class Material{
+    -materialTitle: String
+    -materialType: String
+    -materialActualizationDate: Date
+}
+
+User <|-- Student: Наследование (студент - подтип пользователя)
+User <|-- Instructor: Наследование (преподаватель - подтип пользователя)
+Student "1" -- "0..*" Enrollment: Студент зачисляется на курс
+Enrollment "0..*" -- "1" Course: Зачисление происходит на конкретный курс
+Course "1" *-- "1..*" Material: Курс сосоит из материалов
+
+@enduml
