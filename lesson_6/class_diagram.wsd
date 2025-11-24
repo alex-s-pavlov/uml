@@ -9,7 +9,7 @@ class User {
     -BirthDate: Date
     -Address: String
     +getFullName(): String
-    +getBirthDate()   
+    +getBirthDate(): Date
 }
 
 class Student{
@@ -35,7 +35,7 @@ class Course{
 class Enrollment{
     -enrollmentStartDate: Date
     -enrollmentEndDate: Date
-    -enrollmentedStudent: <<reference>> Student 
+    -enrollmentedStudent: <<reference>> Student
     -enrollmentCourse: <<reference>> Cource
     -isSuccess: Bollean
     +getActiveCourses(student: Student): List<Course>
@@ -50,11 +50,15 @@ class Material{
     +getCourseMaterials(course: Course): List<Material>
 }
 
+class PaymentProcessor{
+    makePayment(): Boolean
+}
+
 User <|-- Student: Наследование (студент - подтип пользователя)
 User <|-- Instructor: Наследование (преподаватель - подтип пользователя)
 Student "1" -- "0..*" Enrollment: Студент зачисляется на курс (ассоциация, 0..*)
 Enrollment "0..*" -- "1" Course: Зачисление происходит на конкретный курс (ассоциация, 0..*)
 Course "*" o-- "1..*" Material: Курс состоит из материалов (композиция, 1..*)
-
+User ..> PaymentProcessor: Пользователь инициирует платеж (зависимость)
 
 @enduml
